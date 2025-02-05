@@ -18,13 +18,13 @@ CREATE SCHEMA IF NOT EXISTS `ayd2_practica1` DEFAULT CHARACTER SET utf8mb4 COLLA
 USE `ayd2_practica1` ;
 
 -- -----------------------------------------------------
--- Table `ayd2_practica1`.`pacientes`
+-- Table `ayd2_practica1`.`paciente`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ayd2_practica1`.`pacientes` (
+CREATE TABLE IF NOT EXISTS `ayd2_practica1`.`paciente` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(50) NOT NULL,
   `apellido` VARCHAR(50) NOT NULL,
-  `cui` VARCHAR(20) NOT NULL,
+  `cui` VARCHAR(15) NOT NULL,
   `telefono` VARCHAR(15) NOT NULL,
   `correo` VARCHAR(100) NOT NULL,
   `edad` INT NOT NULL,
@@ -38,42 +38,20 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `ayd2_practica1`.`doctores`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ayd2_practica1`.`doctores` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(50) NOT NULL,
-  `apellido` VARCHAR(50) NOT NULL,
-  `especialidad` VARCHAR(100) NOT NULL,
-  `telefono` VARCHAR(15) NOT NULL,
-  `correo` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `correo` (`correo` ASC) VISIBLE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
 -- Table `ayd2_practica1`.`citas`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `ayd2_practica1`.`citas` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `paciente_id` INT NOT NULL,
-  `doctor_id` INT NOT NULL,
   `fecha` DATE NOT NULL,
   `hora` TIME NOT NULL,
   `estado` ENUM('Pendiente', 'Completada', 'Cancelada') NULL DEFAULT 'Pendiente',
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `doctor_id` (`doctor_id` ASC, `fecha` ASC, `hora` ASC) VISIBLE,
+  UNIQUE INDEX `fecha` (`fecha` ASC, `hora` ASC) VISIBLE,
   INDEX `paciente_id` (`paciente_id` ASC) VISIBLE,
   CONSTRAINT `citas_ibfk_1`
     FOREIGN KEY (`paciente_id`)
-    REFERENCES `ayd2_practica1`.`pacientes` (`id`)
-    ON DELETE CASCADE,
-  CONSTRAINT `citas_ibfk_2`
-    FOREIGN KEY (`doctor_id`)
-    REFERENCES `ayd2_practica1`.`doctores` (`id`)
+    REFERENCES `ayd2_practica1`.`paciente` (`id`)
     ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -81,25 +59,19 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `ayd2_practica1`.`expedientes`
+-- Table `ayd2_practica1`.`expediente`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ayd2_practica1`.`expedientes` (
+CREATE TABLE IF NOT EXISTS `ayd2_practica1`.`expediente` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `paciente_id` INT NOT NULL,
-  `doctor_id` INT NOT NULL,
   `fecha` DATE NOT NULL,
   `diagnostico` TEXT NOT NULL,
   `tratamiento` TEXT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `paciente_id` (`paciente_id` ASC) VISIBLE,
-  INDEX `doctor_id` (`doctor_id` ASC) VISIBLE,
-  CONSTRAINT `expedientes_ibfk_1`
+  CONSTRAINT `expediente_ibfk_1`
     FOREIGN KEY (`paciente_id`)
-    REFERENCES `ayd2_practica1`.`pacientes` (`id`)
-    ON DELETE CASCADE,
-  CONSTRAINT `expedientes_ibfk_2`
-    FOREIGN KEY (`doctor_id`)
-    REFERENCES `ayd2_practica1`.`doctores` (`id`)
+    REFERENCES `ayd2_practica1`.`paciente` (`id`)
     ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -114,13 +86,13 @@ CREATE TABLE IF NOT EXISTS `ayd2_practica1`.`recetas` (
   `expediente_id` INT NOT NULL,
   `medicamento` VARCHAR(100) NOT NULL,
   `dosis` VARCHAR(100) NOT NULL,
-  `indicaciones` TEXT NOT NULL,
-  `firma_digital` VARCHAR(255) NOT NULL,
+  `indicaciones` TEXT NULL DEFAULT NULL,
+  `firma_digital` VARCHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `expediente_id` (`expediente_id` ASC) VISIBLE,
   CONSTRAINT `recetas_ibfk_1`
     FOREIGN KEY (`expediente_id`)
-    REFERENCES `ayd2_practica1`.`expedientes` (`id`)
+    REFERENCES `ayd2_practica1`.`expediente` (`id`)
     ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
