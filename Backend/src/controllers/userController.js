@@ -1,11 +1,11 @@
 const express = require('express');
-const userService = require('../services/userService');
+const patientService = require('../services/patientService');
 
 const getedMedics = async (req, res) => {
 
     try {
         const idPaciente = req.params.idPaciente; 
-        const medics = await userService.getDoctors(idPaciente);
+        const medics = await patientService.getDoctors(idPaciente);
         res.json(medics);
     } catch (error) {
         console.error(error);
@@ -16,9 +16,9 @@ const getedMedics = async (req, res) => {
 
 
 
-const createUsuario = async (req, res) => {
+const createPatient = async (req, res) => {
     try {
-        const usuario = await userService.createUsuario(req.body);
+        const usuario = await patientService.createPatient(req.body);
         res.status(201).json(usuario);
     } catch (error) {
         console.log(error)
@@ -29,7 +29,7 @@ const createUsuario = async (req, res) => {
 const obtenerUsuario = async (req, res) => { 
     try {
         const {email, pass} = req.body
-        const user = await userService.obtenerUsuario(email,pass);
+        const user = await patientService.obtenerUsuario(email,pass);
         res.json(user);
     } catch (error) {
         
@@ -42,7 +42,7 @@ const updateUserProfile = async (req, res) => {
         const { id } = req.params;
         const updatedData = req.body;
 
-        const result = await userService.updateUserProfile(id, updatedData);
+        const result = await patientService.updateUserProfile(id, updatedData);
         
         if (result.success) {
             res.status(200).json({ message: result.message });
@@ -59,7 +59,7 @@ const getUserById = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const result = await userService.getUserById(id);
+        const result = await patientService.getUserById(id);
 
         if (result.success) {
             res.status(200).json(result.data);
@@ -74,7 +74,7 @@ const getUserById = async (req, res) => {
 
 
 module.exports = {
-    createUsuario,
+    createPatient,
     obtenerUsuario,
     getedMedics,
     updateUserProfile,

@@ -20,14 +20,13 @@ const getDoctors = async (idPatient) => {
 
 
 
-const createUsuario = async (usuarioData) => {
-    const { nombre, apellido, genero, email, pass, direccion, fecha_nacimiento, foto, id_especialidad, id_rol} = usuarioData;
-    //const existeUsuario= await verificarUsuario(email);
-    //if(existeUsuario==null){
+const createPatient = async (usuarioData) => {
+    const { nombre, apellido, cui, telefono, correo, edad, genero, fecha_ingreso} = usuarioData;
+
        
         const [result] = await pool.query(
-            'INSERT INTO usuarios (nombre, apellido, genero, email, pass,direccion, fecha_nacimiento,foto,id_especialidad, id_rol) VALUES (?,?,?,?, SHA2(?, 256),?,?,?,?,?)',
-            [nombre, apellido, genero, email, pass, direccion, fecha_nacimiento, foto, id_especialidad, id_rol]
+            'INSERT INTO paciente (nombre, apellido, cui, telefono, correo, edad, genero, fecha_ingreso) VALUES (?,?,?,?,?,?,?,?)',
+            [nombre, apellido, cui, telefono, correo, edad, genero, fecha_ingreso]
         );
    
         return { message: 'Usuario Creado', exito: true};
@@ -86,7 +85,7 @@ const getUserById = async (id) => {
 
 
 module.exports = {
-    createUsuario,
+    createPatient,
     obtenerUsuario,
     getDoctors,
     updateUserProfile,
