@@ -5,7 +5,7 @@ const bodyParser=require('body-parser');
 const app = express();
 const PORT= process.env.PORT || 3000;
 
-const userRoutes = require('./routes/userRoutes')
+const patientRoutes = require('./routes/patientRoutes')
 const scheleRoutes = require('./routes/scheduleRoutes')
 
 
@@ -35,7 +35,7 @@ app.use('/MediCare',citaRoutes);
 app.use('/MediCare',perfilDrRoutes);
 app.use('/MediCare',appointmentRoutes);
 app.use('/MediCare',scheleRoutes);
-app.use('/MediCare',userRoutes);
+app.use('/MediCare',patientRoutes);
 app.use(bodyParser.json({limit: '15mb'}));
 
 //app.use(cors());

@@ -20,14 +20,13 @@ const getDoctors = async (idPatient) => {
 
 
 
-const createUsuario = async (usuarioData) => {
-    const { nombre, apellido, genero, email, pass, direccion, fecha_nacimiento, foto, id_especialidad, id_rol} = usuarioData;
-    //const existeUsuario= await verificarUsuario(email);
-    //if(existeUsuario==null){
+const createPatient = async (usuarioData) => {
+    const { nombre, apellido, cui, telefono, correo, edad, genero, fecha_ingreso} = usuarioData;
+
        
         const [result] = await pool.query(
-            'INSERT INTO usuarios (nombre, apellido, genero, email, pass,direccion, fecha_nacimiento,foto,id_especialidad, id_rol) VALUES (?,?,?,?, SHA2(?, 256),?,?,?,?,?)',
-            [nombre, apellido, genero, email, pass, direccion, fecha_nacimiento, foto, id_especialidad, id_rol]
+            'INSERT INTO paciente (nombre, apellido, cui, telefono, correo, edad, genero, fecha_ingreso) VALUES (?,?,?,?,?,?,?,?)',
+            [nombre, apellido, cui, telefono, correo, edad, genero, fecha_ingreso]
         );
    
         return { message: 'Usuario Creado', exito: true};
@@ -35,6 +34,37 @@ const createUsuario = async (usuarioData) => {
    // return  { message: 'El usuario ya existe', exito: false}
    
 }
+
+
+const deletePatient = async (userData) => {
+
+    try {
+        const [existingPatient] = await pool.query(
+            'SELECT * FROM paciente WHERE cui = ?',
+            [userData.cui]
+        );
+
+        if (existingPatient.length === 0) {
+            return { message: 'Paciente no encontrado', exito: false };
+        }
+
+        // Eliminar paciente
+        const [result] = await pool.query(
+            'DELETE FROM paciente WHERE cui = ?',
+            [userData.cui]
+        );
+
+        if (result.affectedRows > 0) {
+            return { message: 'Paciente eliminado correctamente', exito: true };
+        } else {
+            return { message: 'Error al eliminar paciente', exito: false };
+        }
+    } catch (error) {
+        console.error('Error en deletePatient:', error);
+        return { message: 'Error interno del servidor', exito: false };
+    }
+};
+
 
 const obtenerUsuario = async(email, pass) => {
     const [rows] = await pool.query('SELECT * FROM usuarios WHERE email=? AND pass=SHA2(?,256)',[email,pass])
@@ -86,9 +116,10 @@ const getUserById = async (id) => {
 
 
 module.exports = {
-    createUsuario,
+    createPatient,
     obtenerUsuario,
     getDoctors,
     updateUserProfile,
-    getUserById
+    getUserById,
+    deletePatient
 };
