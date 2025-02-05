@@ -26,6 +26,17 @@ const createPatient = async (req, res) => {
     }
 };
 
+
+const deletePatient = async (req, res) => {
+    try {
+        const usuario = await patientService.deletePatient(req.body);
+        res.status(201).json(usuario);
+    } catch (error) {
+        console.log(error)
+        res.status(400).json({ message: "No se pudo eliminar el paciente" });
+    }
+};
+
 const obtenerUsuario = async (req, res) => { 
     try {
         const {email, pass} = req.body
@@ -78,5 +89,6 @@ module.exports = {
     obtenerUsuario,
     getedMedics,
     updateUserProfile,
-    getUserById
+    getUserById,
+    deletePatient
 };

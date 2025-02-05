@@ -35,6 +35,37 @@ const createPatient = async (usuarioData) => {
    
 }
 
+
+const deletePatient = async (userData) => {
+
+    try {
+        const [existingPatient] = await pool.query(
+            'SELECT * FROM paciente WHERE cui = ?',
+            [userData.cui]
+        );
+
+        if (existingPatient.length === 0) {
+            return { message: 'Paciente no encontrado', exito: false };
+        }
+
+        // Eliminar paciente
+        const [result] = await pool.query(
+            'DELETE FROM paciente WHERE cui = ?',
+            [userData.cui]
+        );
+
+        if (result.affectedRows > 0) {
+            return { message: 'Paciente eliminado correctamente', exito: true };
+        } else {
+            return { message: 'Error al eliminar paciente', exito: false };
+        }
+    } catch (error) {
+        console.error('Error en deletePatient:', error);
+        return { message: 'Error interno del servidor', exito: false };
+    }
+};
+
+
 const obtenerUsuario = async(email, pass) => {
     const [rows] = await pool.query('SELECT * FROM usuarios WHERE email=? AND pass=SHA2(?,256)',[email,pass])
     if (rows.length==0) {
@@ -89,5 +120,6 @@ module.exports = {
     obtenerUsuario,
     getDoctors,
     updateUserProfile,
-    getUserById
+    getUserById,
+    deletePatient
 };
