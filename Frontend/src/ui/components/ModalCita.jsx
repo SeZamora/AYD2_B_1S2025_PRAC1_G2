@@ -1,21 +1,59 @@
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react'
 import { Input } from '../../ui/components/Input';
-import { Label } from '../../ui/components/Label';
+
 
 //import { AuthContext } from '../../auth/context/AuthContext';
 
-export default function ModalCita({ isOpen, onClose, doctorId, hora, fecha, dia }) {
-    const notifySuccess = (message) => toast.success(message);
-    const notifyError = (message) => toast.error(message);
-    //const { user } = useContext(AuthContext);
+export default function ModalCita({ isOpen, onClose }) {
 
-    const [motivo, setMotivo] = useState('')
+        const [cui, setCui] = useState('');
+        const [fecha, setFecha] = useState('');
+        const [hora, setHora] = useState('');
+    
+        const Reservar = () => {
+            if (!cui) {
+                toast.error('Debe ingresar un CUI válido.');
+                return;
+            }
+    
+            if (!fecha) {
+                toast.error('Debe seleccionar una fecha.');
+                return;
+            }
+    
+            const fechaSeleccionada = new Date(fecha + 'T00:00:00'); // Asegura que se obtiene el día correcto
+            const diaSemana = fechaSeleccionada.getUTCDay(); // 0 = Domingo, 6 = Sábado
+    
+            if (diaSemana === 0) {
+                toast.error('No se pueden agendar citas los domingos.');
+                return;
+            }
+    
+            if (!hora) {
+                toast.error('Debe seleccionar una hora.');
+                return;
+            }
+    
+            const [horaSeleccionada, minutos] = hora.split(':').map(Number);
+            if (horaSeleccionada < 7 || horaSeleccionada > 19 || (horaSeleccionada === 19 && minutos > 0)) {
+                toast.error('El consultorio solo atiende de 7:00 AM a 7:00 PM.');
+                return;
+            }
+    
+            toast.success('Cita validada correctamente.');
+        };
+    
+       
+    /*nst notifySuccess = (message) => toast.success(message);
+    const notifyError = (message) => toast.error(message);
+    
+
 
     const onSubmit = async (data) => {
-        console.log('Doctor:', doctorId, 'Hora:', hora, 'Fecha:', fecha, 'Motivo:', motivo, 'Paciente:', id );
+
         try {
             const response = await fetch(`http://localhost:3000/MediCare/appoitment/programed`, {
               method: "POST",
@@ -48,7 +86,7 @@ export default function ModalCita({ isOpen, onClose, doctorId, hora, fecha, dia 
         }
 
         onClose()
-      };
+      };*/
 
     return (
         <>
@@ -76,37 +114,64 @@ export default function ModalCita({ isOpen, onClose, doctorId, hora, fecha, dia 
                                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             >
                                 <DialogPanel className="relative transform overflow-hidden rounded-lg bg-bg-200 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                                    <div className=" px-4 py-5 sm:px-6">
-                                        <div className="flex items-center justify-center">
-                                            <h3 className="ml-2 text-lg font-semibold text-gray-900">Reservar Cita</h3>
-                                        </div>
-                                        <div className="flex items-center justify-center">
-                                            <h4>Doctor: {doctorId}</h4>
-                                        </div>
-                                        <div className="flex items-center justify-center">
-                                            <h4>Hora de la cita: {hora}</h4>
-                                        </div>
-                                        <div className="flex items-center justify-center">
-                                            <h4>Fecha de la cita: {fecha}</h4>
-                                        </div>
+                                    <br />
+                                    <div className="col-span-3">
+                                        <h1 className="text-2xl font-bold text-center">Agendar Cita</h1>
                                     </div>
-                                    <form className="space-y-4 " onSubmit={onSubmit}>
+                                    <div className="col-span-1 col-start-2">
+                                        <br />
+                                        <form>
+                                        <div className="flex items-center justify-center">
+                                            <h4>CUI del paciente</h4>
+                                        </div>
                                         <div className=" sm:px-6">
                                             <div className="grid grid-cols-1 gap-4">
-                                                <div>
-                                                    <Label>Motivo de la cita</Label>
-                                                    <Input type="text" name="motivo" value={motivo}
-                                                        onChange={(e) => setMotivo(e.target.value)} />
-                                                </div>
+                                                <Input
+                                                    type="text"
+                                                    name="cui"
+                                                    value={cui}
+                                                    onChange={(e) => setCui(e.target.value)}
+                                                />
                                             </div>
                                         </div>
-                                    </form>
+                                        <br/>
+                                        <div className="flex items-center justify-center">
+                                            <h4>Fecha</h4>
+                                        </div>
+                                        <div className=" sm:px-6">
+                                            <div className="grid grid-cols-1 gap-4">
+                                            <Input
+                                                type="date"
+                                                name="fecha"
+                                                value={fecha}
+                                                onChange={(e) => setFecha(e.target.value)}
+                                            />
+                                        </div>
+                                        </div>
+                                        <br/>
+                                        <div className="flex items-center justify-center">
+                                            <h4>Hora de la cita</h4>
+                                        </div>
+                                            <div className=" sm:px-6">
+                                            <div className="grid grid-cols-1 gap-4">
+                                            <Input
+                                                type="time"
+                                                name="hora"
+                                                value={hora}
+                                                onChange={(e) => setHora(e.target.value)}
+                                            />
+                                            </div>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                            <br />
 
 
                                     <div className="bg-bg-200 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
                                         <button
                                             className="mt-3 inline-flex w-full justify-center rounded-md bg-primary-100 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                            onClick={onSubmit}
+                                            onClick={Reservar}
                                         >
                                             Reservar
                                         </button>

@@ -129,7 +129,7 @@ const getExpediente = async (id_nombre) => {
     try {
         // Buscar paciente por CUI o nombre completo
         const queryPaciente = `
-            SELECT * FROM pacientes 
+            SELECT * FROM paciente 
             WHERE cui = ? OR CONCAT(nombre, ' ', apellido) = ? 
             LIMIT 1;
         `;
@@ -143,18 +143,16 @@ const getExpediente = async (id_nombre) => {
 
         // Obtener historial de consultas
         const queryHistorial = `
-            SELECT e.id, e.fecha, e.diagnostico, e.tratamiento, d.nombre AS doctor_nombre, d.apellido AS doctor_apellido
-            FROM expedientes e
-            JOIN doctores d ON e.doctor_id = d.id
+            SELECT e.id, e.fecha, e.diagnostico, e.tratamiento
+            FROM expediente e
             WHERE e.paciente_id = ?;
         `;
         const [historial] = await pool.query(queryHistorial, [pacienteId]);
 
         // Obtener citas futuras
         const queryCitas = `
-            SELECT c.id, c.fecha, c.hora, d.nombre AS doctor_nombre, d.apellido AS doctor_apellido, c.estado
+            SELECT c.id, c.fecha, c.hora, c.estado
             FROM citas c
-            JOIN doctores d ON c.doctor_id = d.id
             WHERE c.paciente_id = ? AND c.fecha >= CURDATE();
         `;
         const [citas] = await pool.query(queryCitas, [pacienteId]);
@@ -163,7 +161,7 @@ const getExpediente = async (id_nombre) => {
         const queryRecetas = `
             SELECT r.id, r.medicamento, r.dosis, r.indicaciones, r.firma_digital
             FROM recetas r
-            JOIN expedientes e ON r.expediente_id = e.id
+            JOIN expediente e ON r.expediente_id = e.id
             WHERE e.paciente_id = ?;
         `;
         const [recetas] = await pool.query(queryRecetas, [pacienteId]);
@@ -181,6 +179,7 @@ const getExpediente = async (id_nombre) => {
         return { success: false, message: 'Error interno del servidor' };
     }
 };
+
 
 module.exports = {
     createPatient,
