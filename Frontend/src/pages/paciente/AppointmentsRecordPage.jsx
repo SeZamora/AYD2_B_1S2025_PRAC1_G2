@@ -1,16 +1,16 @@
 import { Card } from '../../ui/components/Card'
 import { useEffect, useState, useContext } from 'react';
-import { AuthContext } from '../../auth/context/AuthContext';
+
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const AppointmentsRecordPage = () => {
   const [appointments, setAppointments] = useState([]);
 
-  const { user } = useContext(AuthContext);
+
 
   useEffect(() => {
-    fetch(`http://localhost:3000/MediCare/appitment/pending/${user.id}`)
+    fetch(`http://localhost:3000/MediCare/appitment/pending/${7}`)
       .then((response) => response.json())
       .then((data) => {
         setAppointments(data);

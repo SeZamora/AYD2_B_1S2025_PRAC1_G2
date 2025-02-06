@@ -5,17 +5,17 @@ import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/re
 import { Input } from '../../ui/components/Input';
 import { Label } from '../../ui/components/Label';
 
-import { AuthContext } from '../../auth/context/AuthContext';
+//import { AuthContext } from '../../auth/context/AuthContext';
 
 export default function ModalCita({ isOpen, onClose, doctorId, hora, fecha, dia }) {
     const notifySuccess = (message) => toast.success(message);
     const notifyError = (message) => toast.error(message);
-    const { user } = useContext(AuthContext);
+    //const { user } = useContext(AuthContext);
 
     const [motivo, setMotivo] = useState('')
 
     const onSubmit = async (data) => {
-        console.log('Doctor:', doctorId, 'Hora:', hora, 'Fecha:', fecha, 'Motivo:', motivo, 'Paciente:', user.id);
+        console.log('Doctor:', doctorId, 'Hora:', hora, 'Fecha:', fecha, 'Motivo:', motivo, 'Paciente:', id );
         try {
             const response = await fetch(`http://localhost:3000/MediCare/appoitment/programed`, {
               method: "POST",
@@ -28,7 +28,7 @@ export default function ModalCita({ isOpen, onClose, doctorId, hora, fecha, dia 
                 hour: hora,
                 date: fecha,
                 reason: motivo,
-                idPacient: user.id
+                idPacient: id
               }),
             });
     

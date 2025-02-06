@@ -1,7 +1,6 @@
-import { useContext, Fragment } from 'react';
+import { Fragment } from 'react';
 import { Disclosure, Menu, Transition, MenuItem, MenuItems, MenuButton } from '@headlessui/react'
 import { useNavigate, Outlet } from 'react-router-dom';
-import { AuthContext } from '../../auth/context/AuthContext';
 import Logo from '../../assets/logo.svg'
 
 function classNames(...classes) {
@@ -12,14 +11,11 @@ const usuario = [
 
 
 export default function Navbar({ navigation, editRoute }) {
-    const { user, logout } = useContext(AuthContext);
+
     const navigate = useNavigate();
 
     const onLogout = () => {
-        logout();
-        navigate('/login', {
-            replace: true
-        });
+        console.log('Logout');
     }
 
     const onNavigate = (route) => {
