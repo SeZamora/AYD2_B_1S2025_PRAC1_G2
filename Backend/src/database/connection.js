@@ -12,7 +12,7 @@ const pool = createPool({
     host: "localhost",
     user: "root",
     password: "root",
-    database: "ayd2_practica1",
+    database: "p1_ayd2",
     connectionLimit: 10
 });
 
