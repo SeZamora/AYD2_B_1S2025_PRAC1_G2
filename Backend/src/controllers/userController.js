@@ -83,6 +83,18 @@ const getUserById = async (req, res) => {
     }
 };
 
+const getExpediente = async (req, res) => {
+    try {
+        const { id_nombre } = req.params;
+
+        const expediente = await patientService.getExpediente(id_nombre);
+
+        res.json(expediente);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al obtener el expediente' });
+    }
+};
 
 module.exports = {
     createPatient,
@@ -90,5 +102,6 @@ module.exports = {
     getedMedics,
     updateUserProfile,
     getUserById,
-    deletePatient
+    deletePatient,
+    getExpediente
 };
