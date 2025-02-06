@@ -26,6 +26,31 @@ const createPatient = async (req, res) => {
     }
 };
 
+const getPatients = async (req, res) => {
+    try {
+        const pacientes = await patientService.getAllPatients();
+        res.status(200).json({exito: true, pacientes});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ exito: false, message: "Error al obtener los pacientes." });
+    }
+};
+const getPatient = async (req, res) => {
+    try {
+        const { idOrCui } = req.params; // Recibe el ID o CUI desde la URL
+        const paciente = await patientService.getPatientIdOrCui(idOrCui);
+
+        if (!paciente) {
+            return res.status(404).json({ exito: false, message: "Paciente no encontrado." });
+        }
+
+        res.status(200).json({ exito: true, paciente });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ exito: false, message: "Error al obtener el paciente." });
+    }
+};
+
 
 const deletePatient = async (req, res) => {
     try {
@@ -98,6 +123,8 @@ const getExpediente = async (req, res) => {
 
 module.exports = {
     createPatient,
+    getPatients,
+    getPatient,
     obtenerUsuario,
     getedMedics,
     updateUserProfile,

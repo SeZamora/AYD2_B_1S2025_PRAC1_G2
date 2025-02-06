@@ -16,9 +16,36 @@ const getDoctors = async (idPatient) => {
     const [rows] = await pool.query(query, [idPatient]);
     return rows;
 };
+//Obtener todos los pacientes
+const getAllPatients = async () => {
+    const [rows] = await pool.query('SELECT * FROM paciente');
+    return rows; 
+};
 
+// obtener paciente por el ID o CUID
+const getPatientIdOrCui = async (idOrCui) => {
+    const [rows] = await pool.query(
+        'SELECT * FROM paciente WHERE id = ? OR cui = ? LIMIT 1',
+        [idOrCui, idOrCui]
+    );
+    return rows.length > 0 ? rows[0] : null;
+};
 
+const getUserById = async (id) => {
+    try {
+        const query = `SELECT * FROM usuarios WHERE id_usuario = ?`;
+        const [results] = await pool.query(query, [id]);
 
+        if (results.length === 0) {
+            return { success: false, message: 'Usuario no encontrado' };
+        }
+
+        return { success: true, data: results[0] };
+    } catch (error) {
+        console.error('Error al obtener el usuario:', error);
+        return { success: false, message: 'Error al obtener el usuario' };
+    }
+};
 
 const createPatient = async (usuarioData) => {
     const { nombre, apellido, cui, telefono, correo, edad, genero, fecha_ingreso } = usuarioData;
@@ -97,21 +124,6 @@ const updateUserProfile = async (id, updatedData) => {
     }
 };
 
-const getUserById = async (id) => {
-    try {
-        const query = `SELECT * FROM usuarios WHERE id_usuario = ?`;
-        const [results] = await pool.query(query, [id]);
-
-        if (results.length === 0) {
-            return { success: false, message: 'Usuario no encontrado' };
-        }
-
-        return { success: true, data: results[0] };
-    } catch (error) {
-        console.error('Error al obtener el usuario:', error);
-        return { success: false, message: 'Error al obtener el usuario' };
-    }
-};
 
 const getExpediente = async (id_nombre) => {
     try {
@@ -174,8 +186,10 @@ module.exports = {
     createPatient,
     obtenerUsuario,
     getDoctors,
+    getAllPatients,
     updateUserProfile,
     getUserById,
+    getPatientIdOrCui,
     deletePatient,
     getExpediente
 };
