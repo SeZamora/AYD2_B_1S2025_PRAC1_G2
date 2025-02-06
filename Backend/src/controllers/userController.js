@@ -26,6 +26,31 @@ const createPatient = async (req, res) => {
     }
 };
 
+const getPatients = async (req, res) => {
+    try {
+        const pacientes = await patientService.getAllPatients();
+        res.status(200).json({exito: true, pacientes});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ exito: false, message: "Error al obtener los pacientes." });
+    }
+};
+const getPatient = async (req, res) => {
+    try {
+        const { idOrCui } = req.params; // Recibe el ID o CUI desde la URL
+        const paciente = await patientService.getPatientIdOrCui(idOrCui);
+
+        if (!paciente) {
+            return res.status(404).json({ exito: false, message: "Paciente no encontrado." });
+        }
+
+        res.status(200).json({ exito: true, paciente });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ exito: false, message: "Error al obtener el paciente." });
+    }
+};
+
 
 const deletePatient = async (req, res) => {
     try {
@@ -83,12 +108,27 @@ const getUserById = async (req, res) => {
     }
 };
 
+const getExpediente = async (req, res) => {
+    try {
+        const { id_nombre } = req.params;
+
+        const expediente = await patientService.getExpediente(id_nombre);
+
+        res.json(expediente);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al obtener el expediente' });
+    }
+};
 
 module.exports = {
     createPatient,
+    getPatients,
+    getPatient,
     obtenerUsuario,
     getedMedics,
     updateUserProfile,
     getUserById,
-    deletePatient
+    deletePatient,
+    getExpediente
 };
