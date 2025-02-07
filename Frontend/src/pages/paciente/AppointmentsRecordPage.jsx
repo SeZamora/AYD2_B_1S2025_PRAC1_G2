@@ -10,7 +10,7 @@ export const AppointmentsRecordPage = () => {
   const [appointments, setAppointments] = useState([]);
   const [modalData, setModalData] = useState({ isOpen: false, hora: '', fecha: '', doctorId: '' });
 
-
+/*
 
 const fakeAppointments = [
   {
@@ -32,44 +32,53 @@ const fakeAppointments = [
     Cui: "4567891230101"
   }
 ];
-
-  useEffect(() => {
+useEffect(() => {
     
       // Simular carga de datos
       setAppointments(fakeAppointments);
     }, []);
+    */
+
+  useEffect(() => {
+
+
+
+    fetch(`http://localhost:3000/MediCare/citas`)
+      .then((response) => response.json())
+      .then((data) => {
+        setAppointments(data);
+     });
+ }, []);
+
+
+ const cancelarCita = async (idCita) => {
+  console.log('Cancelando cita con ID:', idCita);
+  try {
+    const response = await fetch('http://localhost:3000/MediCare/appointment/delete', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ idCita }) // Enviar el ID en el cuerpo de la petición
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al cancelar la cita');
+    }
+
+    toast.success("Se ha cancelado la cita exitosamente.");
     
+    // Esperar 2 segundos antes de recargar la página
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
 
-
-
-    //fetch(`http://localhost:3000/MediCare/appitment/pending/${7}`)
-      //.then((response) => response.json())
-      //.then((data) => {
-       // setAppointments(data);
-      //});
-  //}, []);
-
-
-
-  const cancelarCita = (id_cita) => {
-    try{
-      fetch(`http://localhost:3000/MediCare/cita/cancelarpaciente/${id_cita}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      toast.success("Se ha cancelado la cita exitosamente.");
-      // esperar 2 segundos
-      setTimeout(() => {
-        // refresh the page
-        window.location.reload();
-      }, 2000);
-    }
-    catch (error) {
-      toast.error('Hubo un problema al cancelar la cita. Por favor, intenta nuevamente más tarde.');
-    }
+  } catch (error) {
+    toast.error('Hubo un problema al cancelar la cita. Por favor, intenta nuevamente más tarde.');
+   
   }
+};
+
 
   const handleReserveClick = () => {
     setModalData({ isOpen: true});
@@ -98,19 +107,23 @@ const fakeAppointments = [
               <thead className="bg-bg-200 text-xs text-text100 uppercase">
                 <tr>
                   <th scope="col" className="px-6 py-3">Cui</th>
-                  <th scope="col" className="px-6 py-3">Fecha de la Cita</th>
-                  <th scope="col" className="px-6 py-3">Hora</th> 
+                  <th scope="col" className="px-6 py-3">nombre apellido</th>
+                  <th scope="col" className="px-6 py-3">Fecha de la Cita</th>                  
+                  <th scope="col" className="px-6 py-3">Hora</th>                   
                   <th scope="col" className="px-6 py-3">Accion</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-bg-300">
                 {appointments.map((appointment, index) => (
                   <tr key={index}>
-                    <td className="px-6 py-4">{appointment.Cui}</td>
+                    <td className="px-6 py-4">{appointment.cui}</td>
+                    <td className="px-6 py-4">{appointment.nombre_paciente}</td>
                     <td className="px-6 py-4">{appointment.fecha}</td>
-                    <td className="px-6 py-4">{appointment.hora}</td>
+                    <td className="px-6 py-4">{appointment.hora}</td>                  
+              
+
                     <td className="px-6 py-4">
-                      <button className="bg-red-700 text-white rounded-md px-2 py-1" key={index} onClick={() => cancelarCita(appointment.id_cita)}>Cancelar</button>
+                      <button className="bg-red-700 text-white rounded-md px-2 py-1" key={index} onClick={() => cancelarCita(appointment.id)}>Cancelar</button>
                     </td>
                   </tr>
                 ))
