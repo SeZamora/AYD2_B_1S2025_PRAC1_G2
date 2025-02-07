@@ -67,7 +67,7 @@ export const RecetasPage = () => {
         <>
             <div className="h-screen flex flex-col justify-center items-center">
                 <div className="bg-bg-200 max-w-md w-full p-10 rounded-md">
-                    <h1 className="text-2xl font-bold text-center">Agendar Cita</h1>
+                    <h1 className="text-2xl font-bold text-center">Generar Receta</h1>
                     
                     <form onSubmit={RecetaSubmit}>  
                         <h5 htmlFor="cuiPaciente">Cui:</h5>
