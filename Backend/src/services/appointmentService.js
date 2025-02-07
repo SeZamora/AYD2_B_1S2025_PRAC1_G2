@@ -10,10 +10,128 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const obtenerCitas = async (idDoctor) => {
-    const [rows] = await pool.query('SELECT * FROM citas WHERE id_medico = ? AND estado = "pendiente"', [idDoctor]);
-    return rows;
+
+// Programar cita ayd2
+const programAppointment = async (cui, date, hour) => {
+    const connection = await pool2.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // Verificar si el paciente está registrado en la base de datos
+        const verifyPatientQuery = `SELECT id FROM paciente WHERE cui = ?`;
+        const [patient] = await connection.execute(verifyPatientQuery, [cui]);
+
+        if (patient.length === 0) {
+            await connection.rollback();
+            return { exito: false, message: 'El paciente no está registrado en el sistema.' };
+        }
+
+        const idPatient = patient[0].id; 
+        const verifyAppointmentQuery = `
+            SELECT * FROM citas 
+            WHERE paciente_id = ? AND fecha = ? AND hora = ?;
+        `;
+        const [existingAppointment] = await connection.execute(verifyAppointmentQuery, [idPatient, date, hour]);
+
+        if (existingAppointment.length > 0) {
+            await connection.rollback();
+            return { exito: false, message: 'El paciente ya tiene una cita programada en ese horario.' };
+        }
+
+       
+        const insertAppointmentQuery = `
+            INSERT INTO citas (fecha, hora, estado, paciente_id) 
+            VALUES (?, ?, 'Pendiente', ?);
+        `;
+        
+        await connection.execute(insertAppointmentQuery, [date, hour, idPatient]);
+
+        await connection.commit();
+        return { exito: true, message: 'Cita programada correctamente.', date, hour };
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
 };
+
+const editarCita = async (idCita, fecha, hora, estado) => {
+    const query = `
+        UPDATE citas 
+        SET fecha = ?, hora = ?, estado = ? 
+        WHERE id = ?
+    `;
+
+    try {
+        const [result] = await pool.query(query, [fecha, hora, estado, idCita]);
+
+        if (result.affectedRows === 0) {
+            return { exito: false, message: "ERROR: Cita no encontrada." };
+        }
+
+        return { exito: true, message: "Cita actualizada satisfactoriamente" };
+    } catch (error) {
+        console.error("ERROR: no fue posible actualizar la cita.", error);
+        return { exito: false, message: "ERROR: no fue posible actualizar la cita." };
+    }
+};
+
+const eliminarCita = async (idCita) => {
+    const query = `
+        DELETE FROM citas 
+        WHERE id = ?
+    `;
+
+    try {
+        const [result] = await pool.query(query, [idCita]);
+
+        if (result.affectedRows === 0) {
+            return { exito: false, message: "ERROR: Cita no encontrada." };
+        }
+
+        return { exito: true, message: "Cita eliminada exitosamente." };
+    } catch (error) {
+        console.error("Error al eliminar la cita:", error);
+        return { exito: false, message: "Error al eliminar la cita." };
+    }
+};
+const obtenerCitas = async () => {
+    const query = `
+       SELECT c.*, CONCAT(p.nombre, ' ', p.apellido) AS nombre_paciente, p.cui
+        FROM ayd2_practica1.citas c
+        JOIN ayd2_practica1.paciente p ON c.paciente_id = p.id
+    `;
+
+    try {
+        const [rows] = await pool.query(query);
+        return rows;
+    } catch (error) {
+        console.error("Error al obtener todas las citas:", error);
+        return [];
+    }
+};
+
+const obtenerCitaPorCui = async (cui) => {
+   
+    const query = `
+        SELECT c.*, CONCAT(p.nombre, ' ', p.apellido) AS nombre_paciente, p.cui
+        FROM ayd2_practica1.citas c
+        JOIN ayd2_practica1.paciente p ON c.paciente_id = p.id
+        WHERE p.cui = ?;
+    `;
+
+    try {
+        const [rows] = await pool.query(query, [cui]);
+        return rows;
+    } catch (error) {
+        console.error("Error al obtener citas por CUI:", error);
+        return [];
+    }
+};
+
+
+
 
 const obtenerPendientes = async (idDoctor) => {
     const query = `
@@ -118,48 +236,6 @@ const getAppointmentPendingByPatient = async (idPatient) => {
 };
 
 
-const programAppoitment = async (idMedic, day, hour, date, reason, idPatient) => {
-    const connection = await pool2.getConnection();
-    try {
-        await connection.beginTransaction();
-
-        const verifyDisponibilityMedicQuery = `
-      SELECT * FROM horarios h 
-      WHERE h.id_medico = ? AND h.dia = ? AND ? BETWEEN h.hora_inicio AND h.hora_fin;
-    `;
-        const [disponibility] = await connection.execute(verifyDisponibilityMedicQuery, [idMedic, day, hour]);
-        if (disponibility.length === 0) {
-            await connection.rollback();
-            return { success: false, message: 'El médico no tiene disponibilidad en ese horario' };
-        }
-
-        const verifyAppointmentQuery = `
-     SELECT * FROM citas c 
-      WHERE c.id_medico = ? AND c.fecha = ? AND c.hora = ?;
-    `;
-        const [existApoitment] = await connection.execute(verifyAppointmentQuery, [idMedic, date, hour]);
-
-        if (existApoitment.length > 0) {
-            await connection.rollback();
-            return { success: false, message: 'El médico ya tiene una cita programada en esa hora.' };
-        }
-
-        const insertAppoitmentQuery = `
-    INSERT INTO citas (fecha, hora, motivo, estado, id_paciente, id_medico) 
-    VALUES (?, ?, ?, 'pendiente', ?, ?);
-  `;
-
-        await connection.execute(insertAppoitmentQuery, [date, hour, reason, idPatient, idMedic]);
-
-        await connection.commit();
-        return { success: true, message: 'Cita programada correctamente' };
-    } catch (error) {
-        await connection.rollback();
-        throw error;
-    } finally {
-        connection.release();
-    }
-}
 
 const obtenerHistorialCitas = async (idDoctor) => {
     const [rows] = await pool.query(`
@@ -181,13 +257,13 @@ const getCitasHistorialByPaciente = async (idPaciente) => {
         const [results] = await pool.query(query, [idPaciente]);
 
         if (results.length === 0) {
-            return { success: false, message: 'No se encontraron citas para el paciente.' };
+            return { exito: false, message: 'No se encontraron citas para el paciente.' };
         }
 
-        return { success: true, data: results };
+        return { exito: true, data: results };
     } catch (error) {
         console.error('Error al obtener el historial de citas:', error);
-        return { success: false, message: 'Error al obtener el historial de citas' };
+        return { exito: false, message: 'Error al obtener el historial de citas' };
     }
 };
 
@@ -197,9 +273,15 @@ module.exports = {
     obtenerCitas,
     obtenerPendientes,
     atenderCita,
+    
     cancelarCita,
     getAppointmentPendingByPatient,
-    programAppoitment,
+
+    programAppointment,
+    editarCita,
+    eliminarCita,
+    obtenerCitaPorCui,
+
     obtenerHistorialCitas,
     cancelarCitaPaciente,
     transporter,
