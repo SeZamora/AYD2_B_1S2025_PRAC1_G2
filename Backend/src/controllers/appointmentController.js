@@ -1,14 +1,7 @@
 const doctorService = require('../services/appointmentService');
 const appointmentService = require('../services/appointmentService');
 
-const obtenerCitas = async (req, res) => {
-    try {
-        const citas = await doctorService.obtenerCitas(req.params.idDoctor);
-        res.json(citas);
-    } catch (error) {
-        res.status(500).json({ mensaje: error.message });
-    }
-};
+
 
 const obtenerCitasPendientes = async (req, res) => {
     try {
@@ -57,9 +50,9 @@ const getedAppoitmentPendingByPatient = async (req, res) => {
 
 const programedAppoitment = async (req, res) => {
     try {
-        const { idMedic, day, hour, date, reason, idPacient } = req.body;
-        const result = await appointmentService.programAppoitment(idMedic, day, hour, date, reason, idPacient);
-        if (result.success) {
+        const { cui, date , hour } = req.body;
+        const result = await appointmentService.programAppointment(cui, date, hour);
+        if (result.exito) {
             res.status(200).json(result);
         } else {
             res.status(400).json(result);
@@ -69,6 +62,53 @@ const programedAppoitment = async (req, res) => {
         res.json(500).json({ message: 'Error al programar la cita' })
     }
 }
+
+const editAppointment = async (req, res) => {
+    try {
+        const { idCita, date, hour, state } = req.body;
+        const result = await appointmentService.editarCita(idCita, date, hour, state);
+        if (result.exito) {
+            res.status(200).json(result);
+        } else {
+            res.status(400).json(result);
+        }
+    } catch (error) {
+        console.error(error);
+        res.json(500).json({ message: 'Error al editar la cita' })
+    }
+}
+const deleteAppointment = async (req, res) => {
+    try {
+        const { idCita } = req.body;
+        const result = await appointmentService.eliminarCita(idCita);
+        if (result.exito) {
+            res.status(200).json(result);
+        } else {
+            res.status(400).json(result);
+        }
+    } catch (error) {
+        console.error(error);
+        res.json(500).json({ message: 'Error al editar la cita' })
+    }
+}
+const obtenerCitas = async (req, res) => {
+    try {
+        const citas = await doctorService.obtenerCitas();
+        res.json(citas);
+    } catch (error) {
+        res.status(500).json({ mensaje: error.message });
+    }
+};
+
+const obtenerCitasporCUI = async (req, res) => {
+    try {
+        const { cui } = req.body;
+        const citas = await doctorService.obtenerCitaPorCui(cui);
+        res.json(citas);
+    } catch (error) {
+        res.status(500).json({ mensaje: error.message });
+    }
+};
 
 const obtenerHistorialCitas = async (req, res) => {
     try {
@@ -110,7 +150,12 @@ module.exports = {
     atenderCita,
     cancelarCita,
     getedAppoitmentPendingByPatient,
+
     programedAppoitment,
+    editAppointment,
+    deleteAppointment,
+    obtenerCitasporCUI,
+    
     obtenerHistorialCitas,
     cancelarCitaPaciente,
     getCitasHistorialByPaciente
