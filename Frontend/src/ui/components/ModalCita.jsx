@@ -122,7 +122,7 @@ export default function ModalCita({ isOpen, onClose }) {
                                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                                         >
-                                            <DialogPanel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg p-6">
+                                            <DialogPanel className=" bg-blue-200 relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg p-6">
                                                 <h1 className="text-2xl font-bold text-center mb-4">Agendar Cita</h1>
                                                 
                                                 <form onSubmit={CitaSubmit}>

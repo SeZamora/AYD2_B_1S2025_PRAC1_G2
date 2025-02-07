@@ -8,7 +8,7 @@ import { useState } from 'react';
 //import { AuthContext } from '../../auth/context/AuthContext';
 
 export default function ModalCita({ isOpen, onClose ,cuiiD, nombre,estado}) {
-    const [appointmentStatus, setAppointmentStatus] = useState({});
+    const [appointmentStatus, setAppointmentStatus] = useState(estado || 'Pendiente'); 
 
 
     
@@ -39,13 +39,11 @@ export default function ModalCita({ isOpen, onClose ,cuiiD, nombre,estado}) {
                   
 
                   console.log('Estado:', status);
-
+                  
                   const handleStatusChange = (e) => {
                     const newStatus = e.target.value;
-                    setAppointmentStatus(newStatus); // Actualiza directamente el estado
-                    
-                    console.log('Nuevo estado:', newStatus); // Muestra el nuevo estado en consola
-                  };
+                    setAppointmentStatus(newStatus);  // Solo actualiza si el usuario cambia el valor
+                };
                   
 
                   
@@ -126,7 +124,7 @@ export default function ModalCita({ isOpen, onClose ,cuiiD, nombre,estado}) {
                 return (
                     <>
                         <Transition show={isOpen}>
-                            <Dialog className="relative z-10" onClose={onClose}>
+                            <Dialog className="relative z-10 " onClose={onClose}>
                                 <TransitionChild
                                     enter="ease-out duration-300"
                                     enterFrom="opacity-0"
@@ -148,7 +146,7 @@ export default function ModalCita({ isOpen, onClose ,cuiiD, nombre,estado}) {
                                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                                         >
-                                            <DialogPanel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg p-6">
+                                            <DialogPanel className=" bg-blue-200 relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg p-6">
                                                 <h1 className="text-2xl font-bold text-center mb-4">Modificar Cita para el paciente</h1>
                                                 
                                                 <form onSubmit={CitaSubmit}>
@@ -181,7 +179,7 @@ export default function ModalCita({ isOpen, onClose ,cuiiD, nombre,estado}) {
                                                     <div className="mb-4">
                                                     <label className="block text-sm font-medium text-gray-700">Estado de la cita</label>
                                                     <select
-                                                        value={appointmentStatus}
+                                                        value={appointmentStatus}  // El valor por defecto será el estado inicial o 'Pendiente'
                                                         onChange={handleStatusChange}
                                                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
                                                     >

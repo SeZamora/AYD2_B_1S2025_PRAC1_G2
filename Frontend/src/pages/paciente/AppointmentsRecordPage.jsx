@@ -6,40 +6,15 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ModalCita from '../../ui/components/ModalCita';
 import ModalCitaMM from '../../ui/components/ModadlModifiCita';
+import { Input } from '../../ui/components/Input';
 
 export const AppointmentsRecordPage = () => {
   const [appointments, setAppointments] = useState([]);
   const [modalData, setModalData] = useState({ isOpen: false, });
   const [modalDataMM, setModalDataMM] = useState({ isOpen: false, id:'',nombre:'' , estado:''});
 
-/*
+  const [buscar, Bus] = useState("");
 
-const fakeAppointments = [
-  {
-    id_cita: 1,
-    fecha: "2025-02-10",
-    hora: "09:00 AM",
-    Cui: "1234567890101"
-  },
-  {
-    id_cita: 2,
-    fecha: "2025-02-12",
-    hora: "02:30 PM",
-    Cui: "9876543210101"
-  },
-  {
-    id_cita: 3,
-    fecha: "2025-02-15",
-    hora: "11:15 AM",
-    Cui: "4567891230101"
-  }
-];
-useEffect(() => {
-    
-      // Simular carga de datos
-      setAppointments(fakeAppointments);
-    }, []);
-    */
 
   useEffect(() => {
 
@@ -92,6 +67,44 @@ const handleMMeClick = async (CUI, nombre, estado) => {
   setModalDataMM({ isOpen: true, id: CUI , nombre: nombre, estado: estado}); 
 };
 
+const handleInputChange = (event) => {
+  Bus(event.target.value);
+};
+
+
+
+
+const handleBuscarClick = async () => { // Agrega 'async' aquí
+  console.log("Hora seleccionada:", buscar);
+
+  try {
+    const response = await fetch('http://localhost:3000/MediCare/citasPaciente', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ cui: buscar }) // Enviar el CUI en el cuerpo de la petición
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al obtener la respuesta del servidor');
+    }
+
+    const data = await response.json(); // Convertir la respuesta a JSON
+    setAppointments(data);
+
+    console.log("RESPONSE", data); // Aquí obtendrás el array con las citas
+
+  } catch (error) {
+    console.error("Error:", error);
+    toast.error('Hubo un problema al buscar la cita. Por favor, intenta nuevamente más tarde.');
+  }
+};
+
+
+
+
+
   return (
     <>
       <div className="grid grid-cols-3 p-4 gap-4">
@@ -102,14 +115,40 @@ const handleMMeClick = async (CUI, nombre, estado) => {
 
         <div className="col-span-3">
           <Card>
-          <button
-  onClick={() => handleReserveClick()}
-  className="bg-primary-100 rounded-md w-[250px] h-9 text-text-90 font-bold">
-      
-       Crear Cita    
-</button>
+          <div className="flex justify-between items-center w-full">
+  
+  <button
+    onClick={handleReserveClick}
+    className="bg-primary-100 rounded-md w-[250px] h-9 text-text-90 font-bold">
+    Crear Cita
+  </button>
 
-            <h1 className="text-2xl font-bold text-text-100 text-center">Listado de citas activas</h1>
+ 
+  <div className="flex items-center gap-2">
+    <Input 
+      type="text" 
+      name="buscar" 
+      value={buscar} 
+      placeholder="Buscar por CUI" 
+      onChange={handleInputChange}  
+      style={{ width: "600px" }} // Forzar el ancho con CSS inline
+    />
+    <button
+      onClick={handleBuscarClick}
+      className="bg-primary-100 rounded-md w-[150px] h-9 text-text-90 font-bold">
+      Buscar
+    </button>
+  </div>
+
+
+
+
+</div>
+<br />
+<br />
+
+            <h1 className="text-2xl font-bold text-text-100 text-center mb-4">Listado de citas activas</h1>
+             
             <br />
             <table className="bg-bg-300 w-full col-span-10 text-sm text-center rtl:text-right text-text200 ">
               <thead className="bg-bg-200 text-xs text-text100 uppercase">
