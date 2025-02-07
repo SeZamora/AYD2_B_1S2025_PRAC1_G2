@@ -11,7 +11,7 @@ const database = process.env.DB_DATABASE
 const pool = createPool({
     host: host || "localhost",
     user: user || "root",
-    password: password || "semanasanta",
+    password: password || "root",
     database: database || "ayd2_practica1",
     connectionLimit: 10
 });
