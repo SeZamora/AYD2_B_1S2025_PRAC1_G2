@@ -14,7 +14,7 @@ export const EditarPaciente = () => {
         apellido,
         cui,
         telefono,
-        email,
+        correo,
         edad,
         genero,
         fecha_ingreso,
@@ -25,17 +25,18 @@ export const EditarPaciente = () => {
         apellido: "",
         cui: "",
         telefono: "",
-        email: "",
+        correo: "",
         edad: "",
         genero: "",
         fecha_ingreso: "",
     });
 
     useEffect(() => {
-        fetch(`http://localhost:3000/MediCare/getpaciente/${pacienteId}`)
+        fetch(`http://localhost:3000/MediCare/patient/${pacienteId}`)
         .then((response) => response.json())
         .then((data) => {
-            setFormState(data); // Carga los datos del paciente en el formulario
+            setFormState(data.paciente);
+            console.log(data.paciente) // Carga los datos del paciente en el formulario
         })
         .catch((error) => console.error("Error al obtener el paciente:", error));
     }, [pacienteId, setFormState]);
@@ -46,16 +47,6 @@ export const EditarPaciente = () => {
     const onEditSubmit = async (event) => {
         event.preventDefault();
 
-        const updatedData = {
-        nombre,
-        apellido,
-        cui,
-        telefono,
-        email,
-        edad,
-        genero,
-        fecha_ingreso,
-        };
 
         try {
         const response = await fetch(
@@ -63,13 +54,20 @@ export const EditarPaciente = () => {
             {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updatedData),
+            body: JSON.stringify({
+                nombre,
+                apellido,
+                cui,
+                telefono,
+                correo,
+                edad
+            }),
             }
         );
 
         if (response.ok) {
             notifySuccess("Paciente actualizado con éxito");
-            setTimeout(() => navigate("/"), 2000); // Redirige después de 2 segundos
+            setTimeout(() => navigate("/"), 1000); 
         } else {
             notifyError("Error al actualizar el paciente");
         }
@@ -142,7 +140,7 @@ export const EditarPaciente = () => {
               type="email"
               className="w-full bg-bg300 text-text200 px-4 py-2 rounded-md"
               name="email"
-              value={email}
+              value={correo}
               onChange={onInputChange}
               placeholder="example@mail.com"
             />
@@ -157,26 +155,6 @@ export const EditarPaciente = () => {
               placeholder="Edad"
             />
 
-            <Label htmlFor="genero">Género:</Label>
-            <select
-              className="w-full bg-bg300 text-text-200 px-4 py-2 rounded-md"
-              name="genero"
-              value={genero}
-              onChange={onInputChange}
-            >
-              <option value="">Selecciona tu género</option>
-              <option value="masculino">Masculino</option>
-              <option value="femenino">Femenino</option>
-            </select>
-
-            <Label htmlFor="fecha_ingreso">Fecha de ingreso:</Label>
-            <input
-              className="w-full bg-bg300 text-text200 px-4 py-2 rounded-md"
-              type="date"
-              name="fecha_ingreso"
-              value={fecha_ingreso}
-              onChange={onInputChange}
-            />
 
             <div className="flex items-center justify-center">
               <button
