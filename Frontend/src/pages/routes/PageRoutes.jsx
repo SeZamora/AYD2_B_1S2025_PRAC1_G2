@@ -12,6 +12,7 @@ const navigationPatient = [
   { name: 'xxxx', href: '/profile-patient', current: false },
 ];
 
+ //<Route path="/buscar-expediente" element={<BuscarExpediente />} />
 const PageRoutesComponent = () => {
   return (
     <>
@@ -22,7 +23,7 @@ const PageRoutesComponent = () => {
         <Route path="RecetasPage" element={<RecetasPage />} />
         <Route path="register-pacient" element={<RegisterPacient />} />
         <Route path="editar-paciente/:pacienteId" element={<EditarPaciente/>} />
-        <Route path="/buscar-expediente" element={<BuscarExpediente />} />
+       
        
         <Route path="/" element={<HomePage />} />
       </Routes>
