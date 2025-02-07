@@ -1,8 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import { useForm } from "../../hooks/useForm";
-import Logo from '../../assets/logo.svg';
-import { Card, Label, Input } from "../../ui/components";
+import { Label } from "../../ui/components";
 import './styles.css';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -18,7 +17,6 @@ export const RegisterPacient = () => {
         edad,
         genero,
         fecha_ingreso,
-        foto,
         onInputChange
     } = useForm({
         nombre: '',
@@ -29,37 +27,53 @@ export const RegisterPacient = () => {
         edad: '',
         genero: '',
         fecha_ingreso: '',
-        foto: '',
     });
 
     const notifySuccess = (message) => toast.success(message);
     const notifyError = (message) => toast.error(message);
 
     const onRegisterSubmit = async (event) => {
+        /*
+        {
+            "nombre": "nombre",
+            "apellido": "apellido",
+            "cui": "1234567891011",
+            "telefono": "12345678",
+            "correo": "example@gmail.com",
+            "edad": 30,
+            "genero": "Femenino",
+            "fecha_ingreso": "2025-02-06"
+        }
+        */
         event.preventDefault();
+        try {
+            const response = await fetch('http://localhost:3000/MediCare/createPatient', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nombre,
+                    apellido,
+                    cui,
+                    telefono,
+                    correo: email,
+                    edad,
+                    genero,
+                    fecha_ingreso,
+                }),
+            });
 
-        const dataUser = {
-            nombre,
-            apellido,
-            cui,
-            telefono,
-            email,
-            edad,
-            genero,
-            fecha_ingreso,
-            foto
-        };
+            const data = await response.json();
 
-        console.log(dataUser);
-
-        // Aquí llamas a tu función para crear un nuevo usuario (registro)
-        // const respuesta = await createUser(dataUser);
-        const respuesta = { exito: true, message: "Paciente registrado con éxito" }; // Simulación de respuesta
-
-        if (respuesta.exito) {
-            notifySuccess(respuesta.message);
-        } else {
-            notifyError(respuesta.message);
+            if (data.exito) {
+                notifySuccess('Paciente registrado exitosamente');
+                navigate('/home');
+            } else {
+                notifyError('Error al registrar el paciente');
+            }
+        } catch (error) {
+            notifyError('Error al registrar el paciente');
         }
     }
 

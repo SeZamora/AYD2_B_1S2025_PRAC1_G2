@@ -1,86 +1,100 @@
 import { Card } from '../../ui/components/Card'
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 
 
 export const HomePage = () => {
   const navigate = useNavigate();
   const [doctores, setDoctores] = useState([]);
-  const [especialidad, setEspecialidad] = useState([]);
-
-
-  const [selectedEspecialidad, setSelectedEspecialidad] = useState('0');
-
-  const handleSelectChange = (e) => {
-    setSelectedEspecialidad(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Aquí puedes acceder al valor seleccionado
-    console.log('Especialidad seleccionada:', selectedEspecialidad);
-    fetch(`http://localhost:3000/MediCare/specialty/${selectedEspecialidad}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setDoctores(data);
-      });
-  };
 
   useEffect(() => {
-    fetch(`http://localhost:3000/MediCare/medic/${7}`)
+    fetch(`http://localhost:3000/MediCare/getAllPatients`)
       .then((response) => response.json())
       .then((data) => {
-        setDoctores(data);
-        const especialidadesSet = new Set();
-        const especialidadesArray = [];
-
-        data.forEach((doctor) => {
-          if (!especialidadesSet.has(doctor.especialidad)) {
-            especialidadesSet.add(doctor.especialidad);
-            especialidadesArray.push({ ID: especialidadesArray.length, Nombre: doctor.especialidad });
-          }
-        });
-
-        setEspecialidad(especialidadesArray);
+        setDoctores(data.pacientes);
+      })
+      .catch((error) => {
+        console.error('Error al obtener los datos:', error);
       });
-  });
+  }, []); // Array vacío como segundo parámetro para que solo se ejecute una vez al montar el componente
+  
 
   const handleScheduleAppointment = (doctorID) => {
     navigate(`/schedule-appointment/${doctorID}`);
+  }
+
+  const handleEditPaciente = (pacienteId) => {
+    navigate(`/editar-paciente/${pacienteId}`);
+  }
+
+  const handleEliminarPaciente = (pacienteCui) => {
+    try {
+      fetch(`http://localhost:3000/MediCare/delete`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ cui: pacienteCui }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.exito) {
+            setDoctores(doctores.filter((paciente) => paciente.cui !== pacienteCui));
+          } else {
+            alert('No se pudo eliminar el paciente');
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      }catch (error) {
+        console.error('Error:', error);
+      }
   }
 
   return (
     <>
 
       <div className="grid grid-cols-3 p-4 gap-4 ">
-        {doctores.map((doctor) => (
-          <Card key={doctor.id_usuario}>
+        {doctores.map((paciente) => (
+          <Card key={paciente.id}>
             <h1 className="text-2xl font-bold text-center">
-              Doctor(a) {doctor.nombre + ' ' + doctor.apellido}
+               {paciente.nombre + ' ' + paciente.apellido + ' ' + paciente.id}
             </h1>
             <br />
             <div className="flex ">
-              <label className="text-xl font-bold mr-2">Especialidad:</label>
+              <label className="text-xl font-bold mr-2">Nombre:</label>
               <h1 className="text-xl">
-                {doctor.especialidad}
+                {paciente.nombre}
               </h1>
             </div>
-            <div className="col-span-3">
-              <label className="text-xl font-bold mr-2">Direción de la clinica:</label>
-              <h1 className="text-xl ">{doctor.direccion_clinica}</h1>
+            <div className="flex ">
+              <label className="text-xl font-bold mr-2">CUI:</label>
+              <h1 className="text-xl">
+                {paciente.cui}
+              </h1>
             </div>
             
             <div className="flex items-center justify-center">
               <button
                 className="bg-primary-100 px-4 py-1 rounded-md my-2 disabled:bg-primary-300 w-full text-text-100 font-bold"
-                onClick={() => handleScheduleAppointment(doctor.id_usuario)}
+                onClick={() => handleScheduleAppointment(paciente.id)}
               >
                 Programar una cita
               </button>
 
               <button
-                className="bg-primary-100 px-4 py-1 rounded-md my-2 disabled:bg-danger-300 w-full text-text-100 font-bold"
-                onClick={() => handleScheduleAppointment(doctor.id_usuario)}
+                className="bg-secundary-50 px-4 py-1 rounded-md my-2 disabled:bg-primary-300 w-full text-text-100 font-bold ml-2"
+                onClick={() => handleEditPaciente(paciente.id)}
+              >
+                Editar
+              </button>
+
+            </div>
+            <div className="flex items-center justify-center">
+              <button
+                className="bg-primary-700 px-4 py-1 rounded-md my-2 disabled:bg-primary-300 w-full text-text-100 font-bold"
+                onClick={() => handleEliminarPaciente(paciente.cui)}
               >
                 Eliminar
               </button>
