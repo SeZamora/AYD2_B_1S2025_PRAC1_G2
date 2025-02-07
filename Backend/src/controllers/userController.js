@@ -75,10 +75,10 @@ const obtenerUsuario = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { pacienteId } = req.params;
         const updatedData = req.body;
 
-        const result = await patientService.updateUserProfile(id, updatedData);
+        const result = await patientService.updateUserProfile(pacienteId, updatedData);
         
         if (result.success) {
             res.status(200).json({ message: result.message });
