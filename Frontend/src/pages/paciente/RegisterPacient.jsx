@@ -57,7 +57,7 @@ export const RegisterPacient = () => {
 
             if (data.exito) {
                 notifySuccess('Paciente registrado exitosamente');
-                navigate('/home');
+                navigate('/');
             } else {
                 notifyError('Error al registrar el paciente');
             }

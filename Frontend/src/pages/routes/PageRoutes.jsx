@@ -17,11 +17,12 @@ const PageRoutesComponent = () => {
     <>
       <Navbar navigation={navigationPatient} editRoute={'profile-patient'} />
       <Routes>
-      <Route path="home-page" element={<HomePage />} />
+        <Route path="home-page" element={<HomePage />} />
         <Route path="appointment-list" element={<AppointmentsRecordPage />} />
         <Route path="RecetasPage" element={<RecetasPage />} />
         <Route path="register-pacient" element={<RegisterPacient />} />
         <Route path="editar-paciente/:pacienteId" element={<EditarPaciente/>} />
+        <Route path="/buscar-expediente" element={<BuscarExpediente />} />
        
         <Route path="/" element={<HomePage />} />
       </Routes>

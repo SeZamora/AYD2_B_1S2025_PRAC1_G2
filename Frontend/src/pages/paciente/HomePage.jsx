@@ -19,10 +19,6 @@ export const HomePage = () => {
   }, []); // Array vacío como segundo parámetro para que solo se ejecute una vez al montar el componente
   
 
-  const handleScheduleAppointment = (doctorID) => {
-    navigate(`/schedule-appointment/${doctorID}`);
-  }
-
   const handleEditPaciente = (pacienteId) => {
     navigate(`/editar-paciente/${pacienteId}`);
   }
@@ -65,7 +61,7 @@ export const HomePage = () => {
             <div className="flex ">
               <label className="text-xl font-bold mr-2">Nombre:</label>
               <h1 className="text-xl">
-                {paciente.nombre}
+                {paciente.nombre + ' ' + paciente.apellido}
               </h1>
             </div>
             <div className="flex ">
@@ -76,27 +72,19 @@ export const HomePage = () => {
             </div>
             
             <div className="flex items-center justify-center">
-              <button
-                className="bg-primary-100 px-4 py-1 rounded-md my-2 disabled:bg-primary-300 w-full text-text-100 font-bold"
-                onClick={() => handleScheduleAppointment(paciente.id)}
-              >
-                Programar una cita
-              </button>
 
               <button
-                className="bg-secundary-50 px-4 py-1 rounded-md my-2 disabled:bg-primary-300 w-full text-text-100 font-bold ml-2"
-                onClick={() => handleEditPaciente(paciente.id)}
-              >
-                Editar
-              </button>
-
-            </div>
-            <div className="flex items-center justify-center">
-              <button
-                className="bg-primary-700 px-4 py-1 rounded-md my-2 disabled:bg-primary-300 w-full text-text-100 font-bold"
+                className="bg-red-700 px-4 py-1 rounded-md my-2 disabled:bg-primary-300 w-full text-text-100 font-bold"
                 onClick={() => handleEliminarPaciente(paciente.cui)}
               >
                 Eliminar
+              </button>
+              
+              <button
+                className="bg-green-700 px-4 py-1 rounded-md my-2 disabled:bg-primary-300 w-full text-text-100 font-bold ml-2"
+                onClick={() => handleEditPaciente(paciente.id)}
+              >
+                Editar
               </button>
             </div>
           </Card>
