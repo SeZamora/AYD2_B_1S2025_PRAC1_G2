@@ -5,10 +5,12 @@ import { useEffect, useState, useContext } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ModalCita from '../../ui/components/ModalCita';
+import ModalCitaMM from '../../ui/components/ModadlModifiCita';
 
 export const AppointmentsRecordPage = () => {
   const [appointments, setAppointments] = useState([]);
-  const [modalData, setModalData] = useState({ isOpen: false, hora: '', fecha: '', doctorId: '' });
+  const [modalData, setModalData] = useState({ isOpen: false, });
+  const [modalDataMM, setModalDataMM] = useState({ isOpen: false, id:'',nombre:'' , estado:''});
 
 /*
 
@@ -80,9 +82,15 @@ useEffect(() => {
 };
 
 
+
   const handleReserveClick = () => {
     setModalData({ isOpen: true});
 }
+
+const handleMMeClick = async (CUI, nombre, estado) => {
+  console.log('Modificar cita con CUI:', CUI, 'nombre:', nombre, 'estado:', estado);
+  setModalDataMM({ isOpen: true, id: CUI , nombre: nombre, estado: estado}); 
+};
 
   return (
     <>
@@ -109,7 +117,9 @@ useEffect(() => {
                   <th scope="col" className="px-6 py-3">Cui</th>
                   <th scope="col" className="px-6 py-3">nombre apellido</th>
                   <th scope="col" className="px-6 py-3">Fecha de la Cita</th>                  
-                  <th scope="col" className="px-6 py-3">Hora</th>                   
+                  <th scope="col" className="px-6 py-3">Hora</th> 
+                  <th scope="col" className="px-6 py-3">estado</th>                  
+                  <th scope="col" className="px-6 py-3">Modificar</th>
                   <th scope="col" className="px-6 py-3">Accion</th>
                 </tr>
               </thead>
@@ -119,8 +129,12 @@ useEffect(() => {
                     <td className="px-6 py-4">{appointment.cui}</td>
                     <td className="px-6 py-4">{appointment.nombre_paciente}</td>
                     <td className="px-6 py-4">{appointment.fecha}</td>
-                    <td className="px-6 py-4">{appointment.hora}</td>                  
+                    <td className="px-6 py-4">{appointment.hora}</td>
+                    <td className="px-6 py-4">{appointment.estado}</td>                  
               
+                    <td className="px-6 py-4">
+                      <button className="bg-green-700 text-white rounded-md px-2 py-1" key={index} onClick={() => handleMMeClick(appointment.id, appointment.nombre_paciente, appointment.estado)}>Modificar</button>
+                    </td>
 
                     <td className="px-6 py-4">
                       <button className="bg-red-700 text-white rounded-md px-2 py-1" key={index} onClick={() => cancelarCita(appointment.id)}>Cancelar</button>
@@ -140,7 +154,20 @@ useEffect(() => {
                         
                     />
                 )
-            }
+              }
+                {
+                  modalDataMM.isOpen && (
+                      <ModalCitaMM
+                          isOpen={modalDataMM.isOpen}
+                          onClose={() => setModalDataMM({ ...modalDataMM, isOpen: false , id:'',nombre:''})}
+                          cuiiD={modalDataMM.id}
+                          nombre={modalDataMM.nombre}
+                          estado={modalDataMM.estado}
+                          
+                      />
+                  )
+              }
+            
       </div>
     </>
   )
