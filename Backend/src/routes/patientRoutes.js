@@ -8,7 +8,7 @@ router.post('/createPatient', userController.createPatient); //usado
 router.delete('/delete/', userController.deletePatient); //usado
 router.get('/getAllPatients', userController.getPatients); //usado
 router.post('/obtenerUsuario', userController.obtenerUsuario);
-router.put('/update/:id', userController.updateUserProfile);
+router.put('/updatepaciente/:pacienteId', userController.updateUserProfile); // usado
 router.get('/expediente/:id_nombre', userController.getExpediente);//usado ayd2
 router.get('/patient/:idOrCui', userController.getPatient); //usado
 module.exports = router;
