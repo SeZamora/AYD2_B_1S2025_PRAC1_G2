@@ -1,5 +1,5 @@
 export * from './HomePage';
-export * from './SchedulesPageUser';
+export * from './RecetasPage';
 export * from './AppointmentsRecordPage';
 export * from './RegisterPacient';
 export * from './EditarPaciente';
