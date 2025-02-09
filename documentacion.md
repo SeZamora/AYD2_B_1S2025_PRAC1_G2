@@ -11,21 +11,24 @@
 |  Genesis Nahomi Aparicio Acan | 202113293  |
 
 
-## Indice   
+## Índice   
 1. [Introducción](#1-introducción)
 2. [Objetivos](#2-objetivos)
     1. [Objetivo General](#21-objetivo-general)
     2. [Objetivos Específicos](#22-objetivos-específicos)
-3. [Core del Negocio](#3-CoredelNegocio)
-3. [Requerimientos del Sistema](#3-RequerimientosdelSistema)
-1. [Requerimientos Funcionales](#31-RequerimientosFuncionales)
-    2. [Objetivos Específicos]
-5. [Framework](#5-Framework)
-6. [Patrón de Diseño](#6-PatróndeDiseño)
+3. [Core del Negocio](#3-core-del-negocio)
+4. [Requerimientos del Sistema](#4-requerimientos-del-sistema)
+    1. [Requerimientos Funcionales](#41-requerimientos-funcionales)
+    2. [Requerimientos no Funcionales](#42-requerimientos-no-funcionales)
+5. [Framework](#5-framework)
+6. [Patrón de Diseño](#6-patrón-de-diseño)
 
 
 ## 1. Introducción
 
+La clinica Fenix se caracteriza por tener una solida reuptacion en el sector medido ha brindado durante años un servicio de calidad, sin embargo, con el aumento de la demanda de pacientes han comenzado a tener cietas limitaciones con el sistema tradicional de expedientes fisicos. Por consiguiente, surgen diversos problemas que pueden ser perjudiciales al sector salud de la ciudad de Guatemala. 
+
+La situacion descrita proporciona motivos para crear un sistema de gestion de expedientes medicos. Por lo que, se desarrolla los diversos componentes de este en la siguiente documentacion. Este proyecto busca la mejora de la eficiencia de la clinica medica, dejando atras los diversos problemas descritos, de este modo, la clinica y el sector medico del pais pueden tener una optimizacion de tiempos en la atencion de los pacientes, lo cual permite que la Clinica Fenix siga ofreciendo un servicio de calidad a la poblacion en un tema tan importante como lo es la salud.
 
 ## 2. Objetivos
 
@@ -109,6 +112,22 @@ Historial de consultas anteriores,Citas futuras del paciente,Recetas médicas em
 
 
 ## 5. Framework
+
+### Frontend
+
+Para el frontend se tomó la decision de utilizar como framework principal React debido a las diversas ventajas que proporciona y facilita al desarrollo.
+
+- Uso de JSX para una creacion de componentes intuitiva y simplificada.
+- Uso de herramientas complementarias como librerias que agilizan el desarrollo
+- Ideal para aplicaciones web modernas y proyectos que requieren manejo de datos no estructurados.
+
+Además, se optó por utilizar React con Vite como herramienta de construcción, ya que Vite es una solución moderna y rápida para el desarrollo de aplicaciones web en el frontend. Su capacidad para cargar módulos de manera eficiente proporciona un entorno ágil y de alto rendimiento, lo que facilita la creación de aplicaciones modernas con una configuración mínima. Por consiguiente, esto permitió optimizar el flujo de trabajo.
+
+![alt text](./Resources/image.png)
+
+### Backend
+
+Por otro lado, para el backend se hizo uso de Express con NodeJs, puesto que Express es un framework eficiente que simplifica la creacion de Apis para poder ser ingregado en Nodejs. Tambien, proporciona un alto rendimiento y una facil integracion con la base de datos MySQL.
 
 ## 6. Patrón de Diseño
 
