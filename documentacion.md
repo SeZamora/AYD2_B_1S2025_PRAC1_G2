@@ -111,3 +111,32 @@ Historial de consultas anteriores,Citas futuras del paciente,Recetas médicas em
 ## 5. Framework
 
 ## 6. Patrón de Diseño
+
+### Patrón Utilizado: Modelo-Vista-Controlador (MVC)
+La estructura del proyecto sigue el patrón de diseño Modelo-Vista-Controlador (MVC). Este patrón separa la aplicación en tres componentes principales, facilitando la organización del código, la mantenibilidad y la escalabilidad.
+
+La división de las carpetas en la aplicación respeta lo siguiete del patron MVC:
+- Modelo 
+    - Representado por la carpeta de servicios `services`
+    - Se encarga de gestionar la lógica de negocio y la comunicación con la base de datos
+    - Implementa la gestión de los datos de los pacientes, garantizando que la aplicación pueda acceder y modificar la información de manera estructurada
+- Vista 
+    - Representada por la carpeta `Frontend`
+    - La presentación de los datos se gestiona a través de una interfaz amigable
+    - La comunicación entre la Vista y el Controlador se realiza mediante peticiones HTTP a la API REST.
+- Controlador 
+    - Ubicado en divido entre `controllers` y `routes`, maneja la lógica de la aplicación al recibir las solicitudes de la Vista y delegarlas al Modelo.
+    - No contiene lógica de negocio, solo gestiona las solicitudes y respuestas.
+    - `Routes` solo redirige cada petición HTTP al controlador correspondiente.
+
+![Diargama](./Resources/MVC.png)
+
+### Beneficios del Patrón MVC
+
+- Separación de responsabilidades: Cada componente tiene un rol específico.
+
+- Escalabilidad: Permite modificar o ampliar cada capa sin afectar las demás.
+
+- Desarrollo paralelo: Frontend y backend pueden desarrollarse de manera independiente.
+
+
