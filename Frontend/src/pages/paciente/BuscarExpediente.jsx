@@ -67,7 +67,7 @@ export const BuscarExpediente = () => {
 
         {/* Resultado de la búsqueda */}
         {expediente && (
-          <div className="bg-bg-200 max-w-md w-full p-6 mt-4 rounded-md shadow-md">
+          <div className="bg-bg-200 max-w-md w-full p-6 mt-4 rounded-md shadow-md max-h-[75vh] overflow-y-auto">
             <h2 className="text-xl font-bold mb-3">Datos del Paciente</h2>
             <p><strong>Nombre:</strong> {expediente.paciente.nombre} {expediente.paciente.apellido}</p>
             <p><strong>CUI:</strong> {expediente.paciente.cui}</p>

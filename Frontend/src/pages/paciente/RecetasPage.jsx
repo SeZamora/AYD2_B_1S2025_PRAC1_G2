@@ -6,6 +6,7 @@ export const RecetasPage = () => {
     const {
         cuiPaciente,
         nombre,
+        diagnostico,
         dosis,
         frecuencia,
         indicaciones,
@@ -14,6 +15,7 @@ export const RecetasPage = () => {
     } = useForm({
         cuiPaciente: '',
         nombre: '',
+        diagnostico:'',
         dosis: '',
         frecuencia: '',
         indicaciones: '',
@@ -36,6 +38,7 @@ export const RecetasPage = () => {
                     medicamentos: [
                         {
                             nombre,
+                            diagnostico,
                             dosis,
                             frecuencia,
                             indicaciones,
@@ -48,15 +51,10 @@ export const RecetasPage = () => {
             const data = await response.json();
             console.log(data.message);
 
-            if (data.message==='Receta generada correctamente') {
-                notifySuccess('Receta generada correctamente');
-            } else if (data.message==='Paciente no encontrado') {
-                notifyError('Paciente no encontrado');
-            } else if (data.message==='Faltan datos obligatorios en uno o más medicamentos') {
-                notifyError('Faltan datos obligatorios en uno o más medicamentos');
-                  
-            }else{
-                notifyError('Error al generar la receta');
+              if (data.success) {
+                notifySuccess(data.message);
+            } else{ 
+                notifyError(data.message);
             }
         } catch (error) {
             notifyError('Error al generar la receta');
@@ -67,7 +65,7 @@ export const RecetasPage = () => {
         <>
             <div className="h-screen flex flex-col justify-center items-center">
                 <div className="bg-bg-200 max-w-md w-full p-10 rounded-md">
-                    <h1 className="text-2xl font-bold text-center">Agendar Cita</h1>
+                    <h1 className="text-2xl font-bold text-center">Generar Receta</h1>
                     
                     <form onSubmit={RecetaSubmit}>  
                         <h5 htmlFor="cuiPaciente">Cui:</h5>
@@ -79,6 +77,15 @@ export const RecetasPage = () => {
                             onChange={onInputChange}
                             placeholder="CUI del paciente"
                         />
+                         <h5 htmlFor="nombre">Diagnostico:</h5>
+                        <input
+                            type="text"
+                            className="w-full bg-bg300 text-text200 px-4 py-2 rounded-md mb-3"
+                            name="diagnostico"
+                            value={diagnostico}
+                            onChange={onInputChange}
+                        />
+
 
                         <h5 htmlFor="nombre">Nombre del medicamento:</h5>
                         <input
