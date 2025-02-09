@@ -23,12 +23,33 @@ const generarReceta = async ({ pacienteCui, medicamentos }) => {
         // Buscar el ID del expediente del paciente
         const queryExpediente = `
             SELECT id FROM expediente WHERE paciente_id = ? LIMIT 1;
+
         `;
+
+        
+        const queryDiagnostico = `
+        INSERT INTO ayd2_practica1.expediente (paciente_id, fecha, diagnostico, tratamiento) VALUES
+         (?, ?, ?, ?);
+    `;
+
+        for (const med of medicamentos) {
+            const { nombre, dosis,diagnostico } = med;  
+           
+            const trat = nombre+' '+dosis;
+            
+            await pool.query(queryDiagnostico,[pacienteId, new Date(), diagnostico, trat]);
+
+        }
+
+
+
+
         const [expediente] = await pool.query(queryExpediente, [pacienteId]);
 
         if (expediente.length === 0) {
             return { success: false, message: 'Expediente no encontrado para este paciente' };
         }
+
 
         const expedienteId = expediente[0].id;
 
@@ -39,13 +60,15 @@ const generarReceta = async ({ pacienteCui, medicamentos }) => {
         `;
 
         for (const med of medicamentos) {
-            const { nombre, dosis, indicaciones, firmaDigital } = med;
+            const { nombre, dosis, indicaciones, firmaDigital,diagnostico } = med;            
 
             if (!nombre || !dosis || !firmaDigital) {
                 return { success: false, message: 'Faltan datos obligatorios en uno o más medicamentos' };
-            }
+            }            
 
             await pool.query(queryInsertReceta, [expedienteId, nombre, dosis, indicaciones || '', firmaDigital]);
+            
+
         }
 
         return { success: true, message: 'Receta generada correctamente' };

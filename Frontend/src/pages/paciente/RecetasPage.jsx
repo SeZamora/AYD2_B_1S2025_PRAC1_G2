@@ -6,6 +6,7 @@ export const RecetasPage = () => {
     const {
         cuiPaciente,
         nombre,
+        diagnostico,
         dosis,
         frecuencia,
         indicaciones,
@@ -14,6 +15,7 @@ export const RecetasPage = () => {
     } = useForm({
         cuiPaciente: '',
         nombre: '',
+        diagnostico:'',
         dosis: '',
         frecuencia: '',
         indicaciones: '',
@@ -36,6 +38,7 @@ export const RecetasPage = () => {
                     medicamentos: [
                         {
                             nombre,
+                            diagnostico,
                             dosis,
                             frecuencia,
                             indicaciones,
@@ -74,6 +77,15 @@ export const RecetasPage = () => {
                             onChange={onInputChange}
                             placeholder="CUI del paciente"
                         />
+                         <h5 htmlFor="nombre">Diagnostico:</h5>
+                        <input
+                            type="text"
+                            className="w-full bg-bg300 text-text200 px-4 py-2 rounded-md mb-3"
+                            name="diagnostico"
+                            value={diagnostico}
+                            onChange={onInputChange}
+                        />
+
 
                         <h5 htmlFor="nombre">Nombre del medicamento:</h5>
                         <input
