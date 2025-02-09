@@ -33,18 +33,7 @@ export const RegisterPacient = () => {
     const notifyError = (message) => toast.error(message);
 
     const onRegisterSubmit = async (event) => {
-        /*
-        {
-            "nombre": "nombre",
-            "apellido": "apellido",
-            "cui": "1234567891011",
-            "telefono": "12345678",
-            "correo": "example@gmail.com",
-            "edad": 30,
-            "genero": "Femenino",
-            "fecha_ingreso": "2025-02-06"
-        }
-        */
+       
         event.preventDefault();
         try {
             const response = await fetch('http://localhost:3000/MediCare/createPatient', {
