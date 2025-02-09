@@ -104,23 +104,23 @@ const obtenerUsuario = async (email, pass) => {
 
 const updateUserProfile = async (id, updatedData) => {
     try {
-        const { nombre, apellido, genero, pass, direccion, fecha_nacimiento } = updatedData;
+        const { nombre, apellido, cui, telefono, correo, edad } = updatedData;
         const query = `
-            UPDATE usuarios
-            SET nombre = ?, apellido = ?, genero = ?, pass = SHA2(?, 256), direccion = ?, fecha_nacimiento = ?
-            WHERE id_usuario = ?;
+            UPDATE paciente
+            SET nombre = ?, apellido = ?, cui = ?, telefono = ?, correo = ?, edad = ?
+            WHERE id = ?;
         `;
 
-        const [result] = await pool.query(query, [nombre, apellido, genero, pass, direccion, fecha_nacimiento, id]);
+        const [result] = await pool.query(query, [nombre, apellido, cui, telefono, correo, edad, id]);
 
         if (result.affectedRows === 0) {
-            return { success: false, message: 'Usuario no encontrado o no se pudo actualizar' };
+            return { success: false, message: 'Paciente no encontrado o no se pudo actualizar' };
         }
 
-        return { success: true, message: 'Perfil actualizado correctamente' };
+        return { success: true, message: 'Perfil del paciente actualizado correctamente' };
     } catch (error) {
-        console.error('Error al actualizar el perfil:', error);
-        return { success: false, message: 'Error al actualizar el perfil' };
+        console.error('Error al actualizar el perfil del paciente:', error);
+        return { success: false, message: 'Error al actualizar el perfil del paciente' };
     }
 };
 
