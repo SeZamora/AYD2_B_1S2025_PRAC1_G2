@@ -40,7 +40,36 @@ Desarrollar e implementar un sistema de gestión digital de expedientes médicos
 
 ## 3. Core del Negocio
 
+La Clínica Fénix es un centro de salud privado ubicado en la ciudad de Guatemala, reconocido por brindar tratamientos médicos de alta calidad durante décadas. Su actividad principal se centra en la atención integral a pacientes, abarcando consultas generales, seguimiento médico especializado y gestión de expedientes clínicos. La clínica opera bajo un modelo orientado a la excelencia en el servicio, priorizando la satisfacción del paciente y la eficiencia operativa.
 
+### Servicios Clave:
+- Registro y gestión de expedientes médicos físicos y digitales.
+
+- Consultas médicas presenciales con especialistas.
+
+- Programación de citas y seguimiento de historiales clínicos.
+
+- Emisión de recetas médicas personalizadas.
+
+### Problemática Actual:
+El crecimiento en la demanda de servicios ha expuesto las limitaciones del sistema tradicional basado en expedientes físicos. Los principales desafíos incluyen:
+
+- Acceso lento a información: Búsquedas manuales que generan retrasos en la atención.
+
+- Riesgo de pérdida de datos: Documentación física vulnerable a daños o extravíos.
+
+- Saturación administrativa: Colas prolongadas y dificultad para coordinar citas.
+
+### Solución Propuesta:
+La implementación de un Sistema de Gestión Digital de Expedientes Médicos busca transformar las operaciones de la clínica mediante:
+
+- Digitalización centralizada: Almacenamiento seguro y accesible de datos de pacientes.
+
+- Automatización de procesos: Agilización de citas, registros y actualizaciones de información.
+
+- Integridad de datos: Reducción de errores humanos y garantía de disponibilidad 24/7.
+
+Este sistema no solo optimizará la eficiencia interna, sino que también reforzará la reputación de la clínica al ofrecer una experiencia más ágil y confiable para pacientes y profesionales de la salud.
 
 
 ## 4. Requerimientos del Sistema
