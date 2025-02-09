@@ -48,15 +48,10 @@ export const RecetasPage = () => {
             const data = await response.json();
             console.log(data.message);
 
-            if (data.message==='Receta generada correctamente') {
-                notifySuccess('Receta generada correctamente');
-            } else if (data.message==='Paciente no encontrado') {
-                notifyError('Paciente no encontrado');
-            } else if (data.message==='Faltan datos obligatorios en uno o más medicamentos') {
-                notifyError('Faltan datos obligatorios en uno o más medicamentos');
-                  
-            }else{
-                notifyError('Error al generar la receta');
+              if (data.success) {
+                notifySuccess(data.message);
+            } else{ 
+                notifyError(data.message);
             }
         } catch (error) {
             notifyError('Error al generar la receta');
