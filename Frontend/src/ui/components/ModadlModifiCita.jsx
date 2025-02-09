@@ -3,19 +3,29 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react'
 import { Input } from '../../ui/components/Input';
 import { useForm } from "../../hooks/useForm";
+import { useState } from 'react';
 
 //import { AuthContext } from '../../auth/context/AuthContext';
 
-export default function ModalCita({ isOpen, onClose }) {
+export default function ModalCita({ isOpen, onClose ,cuiiD, nombre,estado}) {
+    const [appointmentStatus, setAppointmentStatus] = useState(estado || 'Pendiente'); 
+
+
+    
+    const idCita = cuiiD
+    const status= estado
+    const nom = nombre
+    console.log('ID:', idCita, 'Nombre:', status);
+   
+
             
-        const  {
-            
-                    cui,
+        const  {           
+           
                     date,
                     hour,  
                     onInputChange                  
                 } = useForm({
-                    cui: '',
+                    
                     date: '',
                     hour: '',
                     
@@ -24,9 +34,23 @@ export default function ModalCita({ isOpen, onClose }) {
                 const notifyError = (message) => toast.error(message);
             
                
+                
+                
+                  
+
+                  console.log('Estado:', status);
+                  
+                  const handleStatusChange = (e) => {
+                    const newStatus = e.target.value;
+                    setAppointmentStatus(newStatus);  // Solo actualiza si el usuario cambia el valor
+                };
+                  
+
+                  
+                  
                 const CitaSubmit = async (event) => {
                     event.preventDefault();
-                    
+                    console.log('Estado enviado:', appointmentStatus);
                    
                     const hoy = new Date();
                      hoy.setHours(0, 0, 0, 0); // Elimina la hora para comparar solo la fecha
@@ -59,23 +83,25 @@ export default function ModalCita({ isOpen, onClose }) {
                         notifyError('El consultorio solo atiende de 7:00 AM a 7:00 PM.');
                         return;
                     }
+
                     
                     try {
                        
-                        const response = await fetch('http://localhost:3000/MediCare/appointment/programed', {
-                            method: 'POST',
+                        const response = await fetch('http://localhost:3000/MediCare/appointment/edit', {
+                            method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                cui,                                 
+                                idCita,                              
                                 date,
                                 hour,
+                                state:appointmentStatus
                             }),
                         });
                         
                         const data = await response.json();
-                        console.log('CUI:', cui, 'date:', date, 'hour:', hour);
+                        console.log('CUI:',idCita , 'date:', date, 'hour:', hour);
 
                         if (data.exito) {
                             notifySuccess(data.message);
@@ -83,9 +109,7 @@ export default function ModalCita({ isOpen, onClose }) {
                             setTimeout(() => {
                                 window.location.reload();
                             }, 200);
-                        } else if (data.message=="El paciente no está registrado en el sistema."){
-                            notifyError(data.message);
-                        } else if (data.message=="El paciente ya tiene una cita programada en ese horario."){
+                        } else {
                             notifyError(data.message);
                         }
                        
@@ -100,7 +124,7 @@ export default function ModalCita({ isOpen, onClose }) {
                 return (
                     <>
                         <Transition show={isOpen}>
-                            <Dialog className="relative z-10" onClose={onClose}>
+                            <Dialog className="relative z-10 " onClose={onClose}>
                                 <TransitionChild
                                     enter="ease-out duration-300"
                                     enterFrom="opacity-0"
@@ -123,19 +147,12 @@ export default function ModalCita({ isOpen, onClose }) {
                                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                                         >
                                             <DialogPanel className=" bg-blue-200 relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg p-6">
-                                                <h1 className="text-2xl font-bold text-center mb-4">Agendar Cita</h1>
+                                                <h1 className="text-2xl font-bold text-center mb-4">Modificar Cita para el paciente</h1>
                                                 
                                                 <form onSubmit={CitaSubmit}>
-                                                    {/* CUI */}
-                                                    <div className="mb-4">
-                                                        <label className="block text-sm font-medium text-gray-700">CUI del paciente</label>
-                                                        <Input
-                                                            type="text"
-                                                            name="cui"
-                                                            value={cui}
-                                                            onChange={onInputChange}
-                                                            placeholder="Ingrese el CUI"
-                                                        />
+                                                        <div className="mb-4">
+                                                        <h3 className="block text-center font-medium text-gray-700 mb-2 cent">{nom}</h3>
+                                                      
                                                     </div>
             
                                                     {/* date */}
@@ -149,7 +166,7 @@ export default function ModalCita({ isOpen, onClose }) {
                                                         />
                                                     </div>
             
-                                                    {/* hour */}
+                                                   
                                                     <div className="mb-4">
                                                         <label className="block text-sm font-medium text-gray-700">hour de la cita</label>
                                                         <Input
@@ -159,8 +176,18 @@ export default function ModalCita({ isOpen, onClose }) {
                                                             onChange={onInputChange}
                                                         />
                                                     </div>
-            
-                                                    {/* Botones */}
+                                                    <div className="mb-4">
+                                                    <label className="block text-sm font-medium text-gray-700">Estado de la cita</label>
+                                                    <select
+                                                        value={appointmentStatus}  // El valor por defecto será el estado inicial o 'Pendiente'
+                                                        onChange={handleStatusChange}
+                                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                                                    >
+                                                        <option value="Pendiente">Pendiente</option>
+                                                        <option value="Completada">Completada</option>
+                                                    </select>
+                                                    </div>
+                                                  
                                                     <div className="flex justify-end gap-2">
                                                         <button
                                                             type="submit"
@@ -168,6 +195,7 @@ export default function ModalCita({ isOpen, onClose }) {
                                                         >
                                                             Reservar
                                                         </button>
+                                                    
                                                         <button
                                                             type="button"
                                                             className="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400"
